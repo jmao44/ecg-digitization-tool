@@ -56,3 +56,5 @@ binary_image = cv.adaptiveThreshold(blurred_image, 255, cv.ADAPTIVE_THRESH_MEAN_
 # kernel = np.ones((2, 2), np.uint8)
 # denoised_image = cv.morphologyEx(binary_image, cv.MORPH_OPEN, kernel, iterations=2)
 display_image(binary_image, 'Processed Image')
+
+cv.imwrite('result_image.png', binary_image)
