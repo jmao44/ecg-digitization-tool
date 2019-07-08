@@ -32,6 +32,18 @@ def increase_contrast(img):
     img = cv.cvtColor(img, cv.COLOR_LAB2RGB)
     return img
 
+
+# Helper function to distinguish different ECG signals on specific image
+def show_components(image):
+    ret, labels = cv.connectedComponents(image)
+    label_hue = np.uint8(179 * labels / np.max(labels))
+    blank_ch = 255 * np.ones_like(label_hue)
+    labeled_image = cv.merge([label_hue, blank_ch, blank_ch])
+
+    labeled_image = cv.cvtColor(labeled_image, cv.COLOR_HSV2BGR)
+    labeled_image[label_hue == 0] = 255
+    display_image(labeled_image, 'Labeled Image')
+
 image_name = 'images/test.jpg'  # select image
 image = cv.imread(image_name)  # read the image
 
@@ -51,10 +63,17 @@ blurred_image = cv.medianBlur(blurred_image, 3)
 
 # apply adaptive threshold to transform to a binary image
 binary_image = cv.adaptiveThreshold(blurred_image, 255, cv.ADAPTIVE_THRESH_MEAN_C, cv.THRESH_BINARY, 101, 50)
+binary_image = cv.bitwise_not(binary_image)
 
 # further noise removal
 # kernel = np.ones((2, 2), np.uint8)
 # denoised_image = cv.morphologyEx(binary_image, cv.MORPH_OPEN, kernel, iterations=2)
 display_image(binary_image, 'Processed Image')
+
+show_components(binary_image)
+
+
+
+
 
 cv.imwrite('result_image.png', binary_image)
