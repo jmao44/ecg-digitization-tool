@@ -3,6 +3,8 @@ import cv2 as cv
 import numpy as np
 from scipy import ndimage
 from matplotlib import pyplot as plt
+from skimage import measure
+from skimage import filters
 
 
 # Helper function to help display an oversized image
@@ -78,4 +80,9 @@ display_image(binary_image, 'Processed Image')
 labeled_image = separate_components(binary_image_inverted)
 display_image(labeled_image, 'Labeled Image')
 
+all_labels = measure.label(binary_image_inverted)
+line_labels = measure.label(binary_image_inverted, background=255)
+
+plt.imshow(all_labels, cmap="nipy_spectral")
+plt.show()
 cv.imwrite('result_image.png', labeled_image)
