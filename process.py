@@ -38,7 +38,7 @@ def separate_components(image):
     ret, labels = cv.connectedComponents(image, connectivity=8)
 
     # mapping component labels to hue value
-    label_hue = np.uint8(179 * labels / np.max(labels))
+    label_hue = np.uint8(200 * labels / np.max(labels))
     blank_ch = 255 * np.ones_like(label_hue)
     labeled_image = cv.merge([label_hue, blank_ch, blank_ch])
     labeled_image = cv.cvtColor(labeled_image, cv.COLOR_HSV2BGR)
@@ -69,12 +69,11 @@ blurred_image = cv.medianBlur(blurred_image, 3)
 binary_image = cv.adaptiveThreshold(blurred_image, 255, cv.ADAPTIVE_THRESH_MEAN_C, cv.THRESH_BINARY, 101, 50)
 binary_image_inverted = cv.bitwise_not(binary_image)
 
-kernel = np.ones((4, 4), np.uint8)
+# connected broken lines
+kernel = np.ones((5, 5), np.uint8)
 dilated_image = cv.dilate(binary_image_inverted, kernel, iterations=1)
-kernel = np.ones((4, 4), np.uint8)
+display_image(dilated_image, 'Dilated Image')
 eroded_image = cv.erode(dilated_image, kernel, iterations=1)
-
-display_image(binary_image_inverted, 'Processed Image')
 display_image(eroded_image, 'Eroded Image')
 
 # display the segmented image
