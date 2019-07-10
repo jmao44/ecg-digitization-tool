@@ -69,13 +69,31 @@ blurred_image = cv.medianBlur(blurred_image, 3)
 binary_image = cv.adaptiveThreshold(blurred_image, 255, cv.ADAPTIVE_THRESH_MEAN_C, cv.THRESH_BINARY, 101, 50)
 binary_image_inverted = cv.bitwise_not(binary_image)
 
-# further noise removal
-# kernel = np.ones((2, 2), np.uint8)
-# denoised_image = cv.morphologyEx(binary_image, cv.MORPH_OPEN, kernel, iterations=2)
-display_image(binary_image, 'Processed Image')
+kernel = np.ones((4, 4), np.uint8)
+dilated_image = cv.dilate(binary_image_inverted, kernel, iterations=1)
+kernel = np.ones((4, 4), np.uint8)
+eroded_image = cv.erode(dilated_image, kernel, iterations=1)
+
+display_image(binary_image_inverted, 'Processed Image')
+display_image(eroded_image, 'Eroded Image')
+
+element = cv.getStructuringElement(cv.MORPH_CROSS, (3, 3))
+done = False
+skel = np.zeros(binary_image_inverted.shape, np.uint8)
+while not done:
+    eroded = cv.erode(eroded_image, element)
+    temp = cv.dilate(eroded, element)
+    temp = cv.subtract(binary_image_inverted, temp)
+    skel = cv.bitwise_or(skel, temp)
+    binary_image_inverted = eroded.copy()
+    zeros = np.size(binary_image_inverted) - cv.countNonZero(binary_image_inverted)
+    if zeros == np.size(binary_image_inverted):
+        done = True
+display_image(skel, 'SKEL')
+
 
 # display the segmented image
-labeled_image = separate_components(binary_image_inverted)
-display_image(labeled_image, 'Labeled Image')
+# labeled_image = separate_components(eroded_image)
+# display_image(labeled_image, 'Labeled Image')
 
-cv.imwrite('result_image.png', labeled_image)
+# cv.imwrite('result_image.png', binary_image)
