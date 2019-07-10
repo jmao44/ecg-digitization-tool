@@ -77,21 +77,6 @@ eroded_image = cv.erode(dilated_image, kernel, iterations=1)
 display_image(binary_image_inverted, 'Processed Image')
 display_image(eroded_image, 'Eroded Image')
 
-element = cv.getStructuringElement(cv.MORPH_CROSS, (3, 3))
-done = False
-skel = np.zeros(binary_image_inverted.shape, np.uint8)
-while not done:
-    eroded = cv.erode(eroded_image, element)
-    temp = cv.dilate(eroded, element)
-    temp = cv.subtract(binary_image_inverted, temp)
-    skel = cv.bitwise_or(skel, temp)
-    binary_image_inverted = eroded.copy()
-    zeros = np.size(binary_image_inverted) - cv.countNonZero(binary_image_inverted)
-    if zeros == np.size(binary_image_inverted):
-        done = True
-display_image(skel, 'SKEL')
-
-
 # display the segmented image
 # labeled_image = separate_components(eroded_image)
 # display_image(labeled_image, 'Labeled Image')
