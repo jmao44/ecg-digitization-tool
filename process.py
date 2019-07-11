@@ -92,13 +92,13 @@ cropped_image = crop_image(binary_image_inverted)
 display_image(cropped_image, 'name')
 
 # connected broken lines
-# kernel = np.ones((5, 5), np.uint8)
-# dilated_image = cv.dilate(binary_image_inverted, kernel, iterations=1)
-# eroded_image = cv.erode(dilated_image, kernel, iterations=1)
-# display_image(eroded_image, 'Processed Image')
+kernel = np.ones((5, 5), np.uint8)
+dilated_image = cv.dilate(cropped_image, kernel, iterations=1)
+eroded_image = cv.erode(dilated_image, kernel, iterations=1)
+display_image(eroded_image, 'Processed Image')
 
 # display the segmented image
-labeled_image = separate_components(cropped_image)
+labeled_image = separate_components(eroded_image)
 display_image(labeled_image, 'Labeled Image')
 
 # cv.imwrite('result_image.png', binary_image)
