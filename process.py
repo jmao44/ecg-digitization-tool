@@ -53,7 +53,7 @@ def crop_image_v2(image, tolerance=0):
 
 # Helper function to distinguish different ECG signals on specific image
 def separate_components(image):
-    ret, labels = cv.connectedComponents(image, connectivity=8)
+    ret, labels = cv.connectedComponents(image, connectivity=4)
 
     # mapping component labels to hue value
     label_hue = np.uint8(179 * labels / np.max(labels))
