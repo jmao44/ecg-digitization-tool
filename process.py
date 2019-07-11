@@ -56,13 +56,14 @@ def separate_components(image):
     ret, labels = cv.connectedComponents(image, connectivity=8)
 
     # mapping component labels to hue value
-    label_hue = np.uint8(210 * labels / np.max(labels))
+    label_hue = np.uint8(179 * labels / np.max(labels))
     blank_ch = 255 * np.ones_like(label_hue)
     labeled_image = cv.merge([label_hue, blank_ch, blank_ch])
     labeled_image = cv.cvtColor(labeled_image, cv.COLOR_HSV2BGR)
 
     # set background label to white
     labeled_image[label_hue == 0] = 255
+    print(len(labels))
     return labeled_image
 
 
@@ -100,5 +101,3 @@ display_image(eroded_image, 'Processed Image')
 # display the segmented image
 labeled_image = separate_components(eroded_image)
 display_image(labeled_image, 'Labeled Image')
-
-# cv.imwrite('result_image.png', binary_image)
