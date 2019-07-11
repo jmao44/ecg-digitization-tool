@@ -1,4 +1,5 @@
 import sys
+import scipy
 import cv2 as cv
 import numpy as np
 from scipy import ndimage
@@ -33,12 +34,29 @@ def increase_contrast(img):
     return img
 
 
+# Helper function to crop the image and eliminate the borders
+def crop_image(image):
+    mask = image > 0
+    coords = np.argwhere(mask)
+    x0, y0 = coords.min(axis=0)
+    x1, y1 = coords.max(axis=0) + 1
+    image = image[x0 + 4: x1 - 10, y0 + 8: y1]
+    return image
+
+
+# Another helper function to crop and remove the borders
+def crop_image_v2(image, tolerance=0):
+    mask = image > tolerance
+    image = image[np.ix_(mask.any(1), mask.any(0))]
+    return image
+
+
 # Helper function to distinguish different ECG signals on specific image
 def separate_components(image):
     ret, labels = cv.connectedComponents(image, connectivity=8)
 
     # mapping component labels to hue value
-    label_hue = np.uint8(200 * labels / np.max(labels))
+    label_hue = np.uint8(210 * labels / np.max(labels))
     blank_ch = 255 * np.ones_like(label_hue)
     labeled_image = cv.merge([label_hue, blank_ch, blank_ch])
     labeled_image = cv.cvtColor(labeled_image, cv.COLOR_HSV2BGR)
@@ -68,16 +86,19 @@ blurred_image = cv.medianBlur(blurred_image, 3)
 # apply adaptive threshold to transform to a binary image
 binary_image = cv.adaptiveThreshold(blurred_image, 255, cv.ADAPTIVE_THRESH_MEAN_C, cv.THRESH_BINARY, 101, 50)
 binary_image_inverted = cv.bitwise_not(binary_image)
+display_image(binary_image_inverted, 'Binary Image')
+
+cropped_image = crop_image(binary_image_inverted)
+display_image(cropped_image, 'name')
 
 # connected broken lines
-kernel = np.ones((5, 5), np.uint8)
-dilated_image = cv.dilate(binary_image_inverted, kernel, iterations=1)
-display_image(dilated_image, 'Dilated Image')
-eroded_image = cv.erode(dilated_image, kernel, iterations=1)
-display_image(eroded_image, 'Eroded Image')
+# kernel = np.ones((5, 5), np.uint8)
+# dilated_image = cv.dilate(binary_image_inverted, kernel, iterations=1)
+# eroded_image = cv.erode(dilated_image, kernel, iterations=1)
+# display_image(eroded_image, 'Processed Image')
 
 # display the segmented image
-# labeled_image = separate_components(eroded_image)
-# display_image(labeled_image, 'Labeled Image')
+labeled_image = separate_components(cropped_image)
+display_image(labeled_image, 'Labeled Image')
 
 # cv.imwrite('result_image.png', binary_image)
