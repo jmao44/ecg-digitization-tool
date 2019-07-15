@@ -12,8 +12,9 @@ class ECGdigitizer:
 
     # Helper function to help display an oversized image
     def display_image(self, image, name):
-        small_image = cv.resize(image, (0, 0), fx=0.85, fy=0.85)
-        cv.imshow(name, small_image)
+        if image.shape[0] > 1000:
+            image = cv.resize(image, (0, 0), fx=0.85, fy=0.85)
+        cv.imshow(name, image)
         cv.waitKey(0)
         cv.destroyAllWindows()
 
@@ -52,17 +53,17 @@ class ECGdigitizer:
 
     # Helper function to distinguish different ECG signals on specific image
     def separate_components(self, image):
-        ret, labels = cv.connectedComponents(image, connectivity=4)
+        ret, labels = cv.connectedComponents(image, connectivity=8)
 
         # mapping component labels to hue value
-        label_hue = np.uint8(179 * labels / np.max(labels))
+        label_hue = np.uint8(199 * labels / np.max(labels))
         blank_ch = 255 * np.ones_like(label_hue)
         labeled_image = cv.merge([label_hue, blank_ch, blank_ch])
         labeled_image = cv.cvtColor(labeled_image, cv.COLOR_HSV2BGR)
 
         # set background label to white
         labeled_image[label_hue == 0] = 255
-        print(len(labels))
+        print(np.amax(labels))
         return labeled_image
 
 
@@ -91,14 +92,29 @@ def main():
     digitizer.display_image(cropped_image, 'Cropped Image')
 
     # use dilation and erosion to fill the gaps and connect broken lines
-    kernel = np.ones((5, 5), np.uint8)
+    kernel = np.ones((6, 6), np.uint8)
     dilated_image = cv.dilate(cropped_image, kernel, iterations=1)
     eroded_image = cv.erode(dilated_image, kernel, iterations=1)
     digitizer.display_image(eroded_image, 'Processed Image')
 
     # display the segmented image
-    labeled_image = digitizer.separate_components(eroded_image)
-    digitizer.display_image(labeled_image, 'Labeled Image')
+    # labeled_image = digitizer.separate_components(eroded_image)
+    # digitizer.display_image(labeled_image, 'Labeled Image')
+
+    labels, nb = ndimage.label(eroded_image)
+    plt.figure(figsize=(12, 9))
+    plt.imshow(labels)
+    plt.title('Labeled Image')
+    plt.axis('off')
+    plt.subplots_adjust(wspace=.05, left=.01, bottom=.01, right=.99, top=.9)
+    plt.show()
+
+    sl = ndimage.find_objects(labels == 20)
+    plt.figure(figsize=(8, 6))
+    plt.imshow(eroded_image[sl[0]])
+    plt.title('Cropped connected component')
+    plt.subplots_adjust(wspace=.05, left=.01, bottom=.01, right=.99, top=.9)
+    plt.show()
 
 if __name__ == '__main__':
     main()
