@@ -65,6 +65,16 @@ class ECGdigitizer:
         labeled_image[label_hue == 0] = 255
         print(np.amax(labels))
         return labeled_image
+    
+
+    # Helper function to display segmented ECG picture
+    def display_segments(self, name, item, axis='off'):
+        plt.figure(figsize=(12, 9))
+        plt.imshow(item)
+        plt.title(name)
+        plt.axis(axis)
+        plt.subplots_adjust(wspace=.05, left=.01, bottom=.01, right=.99, top=.9)
+        plt.show()
 
 
 def main():
@@ -102,19 +112,10 @@ def main():
     # digitizer.display_image(labeled_image, 'Labeled Image')
 
     labels, nb = ndimage.label(eroded_image)
-    plt.figure(figsize=(12, 9))
-    plt.imshow(labels)
-    plt.title('Labeled Image')
-    plt.axis('off')
-    plt.subplots_adjust(wspace=.05, left=.01, bottom=.01, right=.99, top=.9)
-    plt.show()
+    digitizer.display_segments('Labeled Image', labels)
 
     sl = ndimage.find_objects(labels == 20)
-    plt.figure(figsize=(12, 9))
-    plt.imshow(eroded_image[sl[0]])
-    plt.title('Cropped connected component')
-    plt.subplots_adjust(wspace=.05, left=.01, bottom=.01, right=.99, top=.9)
-    plt.show()
+    digitizer.display_segments('Cropped Connected Component', eroded_image[sl[0]], 'on')
 
 if __name__ == '__main__':
     main()
