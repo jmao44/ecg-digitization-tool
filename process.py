@@ -110,7 +110,7 @@ def main():
     plt.show()
 
     sl = ndimage.find_objects(labels == 20)
-    plt.figure(figsize=(8, 6))
+    plt.figure(figsize=(12, 9))
     plt.imshow(eroded_image[sl[0]])
     plt.title('Cropped connected component')
     plt.subplots_adjust(wspace=.05, left=.01, bottom=.01, right=.99, top=.9)
