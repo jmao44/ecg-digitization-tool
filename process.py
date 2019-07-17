@@ -65,7 +65,7 @@ class ECGdigitizer:
         # set background label to white
         labeled_image[label_hue == 0] = 255
         return labeled_image
-    
+
     # Helper function to display segmented ECG picture
     def display_segments(self, name, item, axis='off'):
         plt.figure(figsize=(12, 9))
@@ -86,34 +86,15 @@ def main():
         print('Cannot open image: ' + image_name)
         sys.exit(0)
     digitizer.display_image(image, 'Original Image')
-    
+
     cropped_image = digitizer.crop_image(image)
     digitizer.display_image(cropped_image, 'CROPPED')
 
-    # blur the image slightly to get rid of some noise
-    # blurred_image = cv.GaussianBlur(image, (3, 3), 0)
-    # blurred_image = cv.medianBlur(blurred_image, 3)
-    # digitizer.display_image(blurred_image, 'blurred')
-
-    # # use adaptive thresholding to transform the image into a binary one
+    # use adaptive thresholding to transform the image into a binary one
     binary_image = cv.bitwise_not(cropped_image)
     binary_image = cv.adaptiveThreshold(binary_image, 255, cv.ADAPTIVE_THRESH_MEAN_C, cv.THRESH_BINARY, 101, 50)
     binary_image_inverted = cv.bitwise_not(binary_image)
     digitizer.display_image(binary_image, 'Binary Image')
-
-    # # crop out the borders of the image
-    # cropped_image = digitizer.crop_image(binary_image_inverted)
-    # digitizer.display_image(cropped_image, 'Cropped Image')
-
-    # # use dilation and erosion to fill the gaps and connect broken lines
-    # kernel = np.ones((6, 6), np.uint8)
-    # dilated_image = cv.dilate(cropped_image, kernel, iterations=1)
-    # eroded_image = cv.erode(dilated_image, kernel, iterations=1)
-    # digitizer.display_image(eroded_image, 'Processed Image')
-
-    # # display the segmented image
-    # labeled_image = digitizer.separate_components(binary_image_inverted)
-    # digitizer.display_image(labeled_image, 'Labeled Image')
 
     structure = np.array([[1, 1, 1],
                           [1, 1, 1],
@@ -126,10 +107,6 @@ def main():
         sl = ndimage.find_objects(labels == i)
         print(sl[0])
         digitizer.display_segments('CCC', binary_image[sl[0]], 'on')
-    # sl = ndimage.find_objects(labels == 100)
-    # print(len(sl))
-    # digitizer.display_segments('Cropped Connected Component', binary_image[sl[0]], 'on')
-
 
 if __name__ == '__main__':
     main()
