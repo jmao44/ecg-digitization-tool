@@ -54,6 +54,7 @@ class ECGdigitizer:
     # Helper function to distinguish different ECG signals on specific image
     def separate_components(self, image):
         ret, labels = cv.connectedComponents(image, connectivity=8)
+        print(type(labels))
 
         # mapping component labels to hue value
         label_hue = np.uint8(199 * labels / np.max(labels))
@@ -63,10 +64,8 @@ class ECGdigitizer:
 
         # set background label to white
         labeled_image[label_hue == 0] = 255
-        print(np.amax(labels))
         return labeled_image
     
-
     # Helper function to display segmented ECG picture
     def display_segments(self, name, item, axis='off'):
         plt.figure(figsize=(12, 9))
@@ -111,11 +110,17 @@ def main():
     # labeled_image = digitizer.separate_components(eroded_image)
     # digitizer.display_image(labeled_image, 'Labeled Image')
 
-    labels, nb = ndimage.label(eroded_image)
+    structure = np.array([[1, 1, 1],
+                          [1, 1, 1],
+                          [1, 1, 1]], np.uint8)
+    labels, nb = ndimage.label(eroded_image, structure=structure)
     digitizer.display_segments('Labeled Image', labels)
 
+    print('There are ' + str(np.amax(labels) + 1) + ' labeled components.')
     sl = ndimage.find_objects(labels == 20)
+    print(len(sl))
     digitizer.display_segments('Cropped Connected Component', eroded_image[sl[0]], 'on')
+
 
 if __name__ == '__main__':
     main()
