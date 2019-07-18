@@ -95,23 +95,22 @@ def main():
         sys.exit(0)
     digitizer.display_image(image, 'Original Image')
 
+    # crop out upper region
     cropped_image = digitizer.crop_image(image)
     digitizer.display_image(cropped_image, 'CROPPED')
 
-    # use adaptive thresholding to transform the image into a binary one
-    binary_image = cv.bitwise_not(cropped_image)
-    binary_image = cv.adaptiveThreshold(binary_image, 255, cv.ADAPTIVE_THRESH_MEAN_C, cv.THRESH_BINARY, 101, 50)
-    binary_image_inverted = cv.bitwise_not(binary_image)
+    # use thresholding to transform the image into a binary one
+    ret, binary_image = cv.threshold(cropped_image, 127, 255, cv.THRESH_BINARY)
     digitizer.display_image(binary_image, 'Binary Image')
 
     structure = np.array([[1, 1, 1],
                           [1, 1, 1],
                           [1, 1, 1]], np.uint8)
-    labels, nb = ndimage.label(binary_image_inverted, structure=structure)
+    labels, nb = ndimage.label(binary_image, structure=structure)
     digitizer.display_segments('Labeled Image', labels)
 
     print('There are ' + str(np.amax(labels) + 1) + ' labeled components.')
-    
+
     curve_indices = []
     fig = plt.figure(figsize=(12, 8))
     plt.title('Separated Curves')
