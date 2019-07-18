@@ -101,7 +101,7 @@ def main():
     digitizer.display_image(cropped_image, 'Cropped Image')
 
     # use dilation and erosion to fill the gaps and connect broken lines
-    kernel = np.ones((6, 6), np.uint8)
+    kernel = np.ones((7, 7), np.uint8)
     dilated_image = cv.dilate(cropped_image, kernel, iterations=1)
     eroded_image = cv.erode(dilated_image, kernel, iterations=1)
     digitizer.display_image(eroded_image, 'Processed Image')
@@ -117,9 +117,25 @@ def main():
     digitizer.display_segments('Labeled Image', labels)
 
     print('There are ' + str(np.amax(labels) + 1) + ' labeled components.')
-    sl = ndimage.find_objects(labels == 20)
-    print(len(sl))
-    digitizer.display_segments('Cropped Connected Component', eroded_image[sl[0]], 'on')
+
+    fig = plt.figure(figsize=(12, 8))
+    plt.title('Separated Curves')
+    columns = 4
+    rows = 3
+    curve_count = 0
+    for i in range(1, np.amax(labels) + 1):
+        sl = ndimage.find_objects(labels == i)
+        img = eroded_image[sl[0]]
+        if img.shape[0] < 80:
+            continue
+        curve_count += 1
+        print(type(sl))
+        print(sl)
+        fig.add_subplot(rows, columns, curve_count)
+        plt.imshow(img)
+        if curve_count == 12:
+            break
+    plt.show()
 
 
 if __name__ == '__main__':
