@@ -77,10 +77,11 @@ class ECGdigitizer:
         plt.subplots_adjust(wspace=.05, left=.01, bottom=.01, right=.99, top=.9)
         plt.show()
 
-    # Helper function to detect characters
-    def ocr(image):
-        text = pytesseract.image_to_string(image, lang='eng')
-        return text
+
+# Helper function to detect characters
+def ocr(image):
+    text = pytesseract.image_to_string(image, lang='eng')
+    return text
 
 
 def main():
@@ -110,10 +111,22 @@ def main():
     digitizer.display_segments('Labeled Image', labels)
 
     print('There are ' + str(np.amax(labels) + 1) + ' labeled components.')
-    for i in range(np.amax(labels) + 1):
+    
+    curve_indices = []
+    fig = plt.figure(figsize=(12, 8))
+    plt.title('Separated Curves')
+    columns = 1
+    rows = 5
+    for i in range(1, np.amax(labels) + 1):
         sl = ndimage.find_objects(labels == i)
-        print(sl[0])
-        digitizer.display_segments('CCC', binary_image[sl[0]], 'on')
+        img = binary_image[sl[0]]
+        if img.shape[1] > 200:
+            curve_indices.append(i)
+            fig.add_subplot(rows, columns, len(curve_indices))
+            plt.imshow(img, cmap='gray')
+        else:
+            continue
+    plt.show()
 
 if __name__ == '__main__':
     main()
