@@ -86,7 +86,7 @@ def ocr(image):
 
 def main():
     digitizer = ECGdigitizer()
-    image_name = 'images/test4.jpeg'  # select image
+    image_name = 'images/test5.jpeg'  # select image
     image = cv.imread(image_name, flags=cv.IMREAD_GRAYSCALE)  # read the image as GS
 
     # sanity check
@@ -126,6 +126,23 @@ def main():
         else:
             continue
     plt.show()
+
+    fig = plt.figure(figsize=(12, 8))
+    columns = 10
+    rows = 5
+    s_indices = []
+    for i in range(1, np.amax(labels) + 1):
+        sl = ndimage.find_objects(labels == i)
+        img = binary_image[sl[0]]
+        if 10 < img.shape[0] < 12 and 6 < img.shape[1] < 8:
+            print(img.shape)
+            s_indices.append(i)
+            fig.add_subplot(rows, columns, len(s_indices))
+            plt.imshow(img, cmap='gray')
+        else:
+            continue
+    plt.show()
+
 
 if __name__ == '__main__':
     main()
