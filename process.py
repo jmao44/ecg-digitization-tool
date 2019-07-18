@@ -86,7 +86,7 @@ def ocr(image):
 
 def main():
     digitizer = ECGdigitizer()
-    image_name = 'images/test5.jpeg'  # select image
+    image_name = 'images/test4.jpeg'  # select image
     image = cv.imread(image_name, flags=cv.IMREAD_GRAYSCALE)  # read the image as GS
 
     # sanity check
