@@ -4,6 +4,8 @@ import cv2 as cv
 import numpy as np
 from scipy import ndimage
 from matplotlib import pyplot as plt
+from PIL import Image
+import pytesseract
 
 
 class ECGdigitizer:
@@ -74,6 +76,11 @@ class ECGdigitizer:
         plt.axis(axis)
         plt.subplots_adjust(wspace=.05, left=.01, bottom=.01, right=.99, top=.9)
         plt.show()
+
+    # Helper function to detect characters
+    def ocr(image):
+        text = pytesseract.image_to_string(image, lang='eng')
+        return text
 
 
 def main():
