@@ -65,7 +65,7 @@ class ECGdigitizer:
         # set background label to white
         labeled_image[label_hue == 0] = 255
         return labeled_image
-    
+
     # Helper function to display segmented ECG picture
     def display_segments(self, name, item, axis='off'):
         plt.figure(figsize=(12, 9))
