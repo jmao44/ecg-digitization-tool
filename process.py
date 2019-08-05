@@ -56,7 +56,6 @@ class ECGdigitizer:
     # Helper function to distinguish different ECG signals on specific image
     def separate_components(self, image):
         ret, labels = cv.connectedComponents(image, connectivity=8)
-        print(type(labels))
 
         # mapping component labels to hue value
         label_hue = np.uint8(179 * labels / np.max(labels))
@@ -130,17 +129,23 @@ def main():
     fig = plt.figure(figsize=(12, 8))
     columns = 10
     rows = 5
-    s_indices = []
+
+    # for recording the baselines of the curves
+    baselines = []
     for i in range(1, np.amax(labels) + 1):
         sl = ndimage.find_objects(labels == i)
         img = binary_image[sl[0]]
         if 10 < img.shape[0] < 12 and 6 < img.shape[1] < 8:
-            print(img.shape)
-            s_indices.append(i)
-            fig.add_subplot(rows, columns, len(s_indices))
+            # print(sl)
+            # print(type(sl[0][0]))
+            baselines.append(sl[0][0].stop)
+            print("S Number {} starts from pixel {} and ends at pixel {}.".format(len(baselines), sl[0][0].start, sl[0][0].stop))
+
+            fig.add_subplot(rows, columns, len(baselines))
             plt.imshow(img, cmap='gray')
         else:
             continue
+    print(baselines)
     plt.show()
 
 
