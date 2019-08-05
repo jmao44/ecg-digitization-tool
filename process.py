@@ -101,7 +101,7 @@ def main():
     digitizer.display_image(cropped_image, 'Cropped Image')
 
     # use dilation and erosion to fill the gaps and connect broken lines
-    kernel = np.ones((7, 7), np.uint8)
+    kernel = np.ones((5, 5), np.uint8)
     dilated_image = cv.dilate(cropped_image, kernel, iterations=1)
     eroded_image = cv.erode(dilated_image, kernel, iterations=1)
     digitizer.display_image(eroded_image, 'Processed Image')
