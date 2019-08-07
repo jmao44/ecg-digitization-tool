@@ -162,6 +162,10 @@ def main():
     print("The corresponding baselines for the curves are: ", baselines)
     print()
 
+    fig = plt.figure(figsize=(12, 8))
+    plt.title("Trimmed Curves")
+    columns = 1
+    rows = 5
     # make sure the curves have the same length (same as the shortest)
     final_images = []
     min_length = min(curve_lengths)
@@ -173,6 +177,18 @@ def main():
             diff = img.shape[1] - min_length
             img = crop_image(img, 0, 0, diff, 0)
         final_images.append(img)
+        fig.add_subplot(rows, columns, i + 1)
+        plt.imshow(img, cmap='gray')
+    plt.show()
+
+    print(final_images[0])
+
+    x1 = np.arange(9.0).reshape((3, 3))
+    x2 = np.arange(3.0)
+    print(x1)
+    print(x2)
+    print(np.multiply(x1, x2))
+
 
 if __name__ == '__main__':
     main()
