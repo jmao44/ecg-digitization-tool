@@ -115,6 +115,7 @@ def main():
 
     curve_indices = []
     curve_lengths = []
+    curve_widths = []
     fig = plt.figure(figsize=(12, 8))
     plt.title('Separated Curves')
     columns = 1
@@ -123,9 +124,8 @@ def main():
         sl = ndimage.find_objects(labels == i)
         img = binary_image[sl[0]]
         if img.shape[1] > 200:
-            # print(sl)
-            # print(img.shape)
             curve_indices.append(i)
+            curve_widths.append(img.shape[0])
             curve_lengths.append(img.shape[1])
             print("Curve {} starts from line {} to line {}.".format(len(curve_indices), sl[0][0].start, sl[0][0].stop))
             fig.add_subplot(rows, columns, len(curve_indices))
@@ -137,6 +137,7 @@ def main():
     print()
     print("Effective curves are components from indices: ", curve_indices)
     print("Their corresponding lengths are: ", curve_lengths)
+    print("Their corresponding widths are: ", curve_widths)
     print()
 
     fig = plt.figure(figsize=(12, 8))
@@ -183,11 +184,11 @@ def main():
 
     print(final_images[0])
 
-    x1 = np.arange(9.0).reshape((3, 3))
-    x2 = np.arange(3.0)
-    print(x1)
-    print(x2)
-    print(np.multiply(x1, x2))
+    # x1 = np.arange(9.0).reshape((3, 3))
+    # x2 = np.arange(3.0)
+    # print(x1)
+    # print(x2)
+    # print(np.multiply(x1, x2))
 
 
 if __name__ == '__main__':
