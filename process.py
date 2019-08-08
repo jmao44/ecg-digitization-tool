@@ -182,7 +182,7 @@ def main():
         plt.imshow(img, cmap='gray')
     plt.show()
 
-    print(final_images[0])
+    print(final_images[0].shape)
 
     # x1 = np.arange(9.0).reshape((3, 3))
     # x2 = np.arange(3.0)
