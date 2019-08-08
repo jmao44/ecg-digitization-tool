@@ -106,11 +106,11 @@ def main():
     structure = np.array([[1, 1, 1],
                           [1, 1, 1],
                           [1, 1, 1]], np.uint8)
-    labels, nb = ndimage.label(binary_image, structure=structure)
-    display_segments('Labeled Image', labels)
+    labeled_image, nb = ndimage.label(binary_image, structure=structure)
+    display_segments('Labeled Image', labeled_image)
 
     print()
-    print('There are ' + str(np.amax(labels) + 1) + ' labeled components.')
+    print('There are ' + str(np.amax(labeled_image) + 1) + ' labeled components.')
     print()
 
     curve_indices = []
@@ -120,8 +120,8 @@ def main():
     plt.title('Separated Curves')
     columns = 1
     rows = 5
-    for i in range(1, np.amax(labels) + 1):
-        sl = ndimage.find_objects(labels == i)
+    for i in range(1, np.amax(labeled_image) + 1):
+        sl = ndimage.find_objects(labeled_image == i)
         img = binary_image[sl[0]]
         if img.shape[1] > 200:
             curve_indices.append(i)
@@ -140,13 +140,14 @@ def main():
     print()
 
     fig = plt.figure(figsize=(12, 8))
-    columns = 10
-    rows = 5
+    plt.title("Extracted 'S'")
+    columns = 5
+    rows = 2
 
     # for recording the baselines of the curves
     baselines = []
-    for i in range(1, np.amax(labels) + 1):
-        sl = ndimage.find_objects(labels == i)
+    for i in range(1, np.amax(labeled_image) + 1):
+        sl = ndimage.find_objects(labeled_image == i)
         img = binary_image[sl[0]]
         if 10 < img.shape[0] < 12 and 6 < img.shape[1] < 8:
             baselines.append(sl[0][0].stop)
@@ -169,7 +170,7 @@ def main():
     final_images = []
     min_length = min(curve_lengths)
     for i in range(len(curve_indices)):
-        sl = ndimage.find_objects(labels == curve_indices[i])
+        sl = ndimage.find_objects(labeled_image == curve_indices[i])
         img = binary_image[sl[0]]
         # print(img.shape)
         if img.shape[1] > min_length:
