@@ -127,17 +127,16 @@ def main():
             curve_indices.append(i)
             curve_widths.append(img.shape[0])
             curve_lengths.append(img.shape[1])
-            print("Curve {} starts from line {} to line {}.".format(len(curve_indices), sl[0][0].start, sl[0][0].stop))
+            print("Curve {} line range = [{}, {}].".format(len(curve_indices), sl[0][0].start, sl[0][0].stop))
             fig.add_subplot(rows, columns, len(curve_indices))
             plt.imshow(img, cmap='gray')
         else:
             continue
     plt.show()
 
-    print()
     print("Effective curves are components from indices: ", curve_indices)
-    print("Their corresponding lengths are: ", curve_lengths)
-    print("Their corresponding widths are: ", curve_widths)
+    print("Their corresponding curve lengths are: ", curve_lengths)
+    print("Their corresponding curve widths are: ", curve_widths)
     print()
 
     fig = plt.figure(figsize=(12, 8))
@@ -151,7 +150,7 @@ def main():
         img = binary_image[sl[0]]
         if 10 < img.shape[0] < 12 and 6 < img.shape[1] < 8:
             baselines.append(sl[0][0].stop)
-            print("'S' Number {} starts from pixel {} and ends at pixel {}.".format(len(baselines), sl[0][0].start, sl[0][0].stop))
+            print("'S' {} line range = [{}, {}].".format(len(baselines), sl[0][0].start, sl[0][0].stop))
 
             fig.add_subplot(rows, columns, len(baselines))
             plt.imshow(img, cmap='gray')
@@ -159,7 +158,6 @@ def main():
             continue
     plt.show()
 
-    print()
     print("The corresponding baselines for the curves are: ", baselines)
     print()
 
@@ -182,7 +180,7 @@ def main():
         plt.imshow(img, cmap='gray')
     plt.show()
 
-    print(final_images[0].shape)
+    # print(final_images[0].shape)
 
     # x1 = np.arange(9.0).reshape((3, 3))
     # x2 = np.arange(3.0)
