@@ -181,14 +181,24 @@ def main():
         plt.imshow(img, cmap='gray')
     plt.show()
 
-    # print(final_images[0].shape)
+    example_image = final_images[0]
+    length = example_image.shape[1]
+    width = example_image.shape[0]
+    fig = plt.figure(figsize=(12, 8))
+    plt.title('Scattered Dots')
 
-    # x1 = np.arange(9.0).reshape((3, 3))
-    # x2 = np.arange(3.0)
-    # print(x1)
-    # print(x2)
-    # print(np.multiply(x1, x2))
-
+    xs = []
+    ys = []
+    for i in range(length):
+        for j in range(width - 1, -1, -1):
+            if example_image[j][i] == 255:
+                xs.append(i)
+                ys.append(j)
+                break
+            else:
+                continue
+    plt.plot(xs, ys)
+    plt.show()
 
 if __name__ == '__main__':
     main()
