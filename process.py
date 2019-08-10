@@ -200,5 +200,12 @@ def main():
     plt.plot(xs, ys)
     plt.show()
 
+    base_grayscale = 127
+    grayscale_values = []
+    axis = baselines[0]
+    print(curve_widths)
+
+
+
 if __name__ == '__main__':
     main()
