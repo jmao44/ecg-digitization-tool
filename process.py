@@ -181,23 +181,27 @@ def main():
         plt.imshow(img, cmap='gray')
     plt.show()
 
-    example_image = final_images[0]
-    length = example_image.shape[1]
-    width = example_image.shape[0]
     fig = plt.figure(figsize=(12, 8))
     plt.title('Scattered Dots')
+    columns = 1
+    rows = 5
 
-    xs = []
-    ys = []
-    for i in range(length):
-        for j in range(width - 1, -1, -1):
-            if example_image[j][i] == 255:
-                xs.append(i)
-                ys.append(j)
-                break
-            else:
-                continue
-    plt.plot(xs, ys)
+    for i in range(len(curve_indices)):
+        curve = final_images[i]
+        length = curve.shape[1]
+        width = curve.shape[0]
+        xs = []
+        ys = []
+        for j in range(length):
+            for k in range(width - 1, -1, -1):
+                if curve[k][j] == 255:
+                    xs.append(j)
+                    ys.append(k)
+                    break
+                else:
+                    continue
+        fig.add_subplot(rows, columns, i + 1)
+        plt.plot(xs, ys)
     plt.show()
 
     base_grayscale = 127
