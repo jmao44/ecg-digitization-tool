@@ -196,7 +196,7 @@ def main():
             for k in range(width - 1, -1, -1):
                 if curve[k][j] == 255:
                     xs.append(j)
-                    ys.append(k)
+                    ys.append(width - k)
                     break
                 else:
                     continue
