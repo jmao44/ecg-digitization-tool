@@ -116,6 +116,8 @@ def main():
     curve_indices = []
     curve_lengths = []
     curve_widths = []
+    curve_lower_bound = []
+    curve_upper_bound = []
     fig = plt.figure(figsize=(12, 8))
     plt.title('Separated Curves')
     columns = 1
@@ -127,6 +129,8 @@ def main():
             curve_indices.append(i)
             curve_widths.append(img.shape[0])
             curve_lengths.append(img.shape[1])
+            curve_lower_bound.append(sl[0][0].stop)
+            curve_upper_bound.append(sl[0][0].start)
             print("Curve {} line range = [{}, {}].".format(len(curve_indices), sl[0][0].start, sl[0][0].stop))
             fig.add_subplot(rows, columns, len(curve_indices))
             plt.imshow(img, cmap='gray')
@@ -186,6 +190,7 @@ def main():
     columns = 1
     rows = 5
 
+    coords = []
     for i in range(len(curve_indices)):
         curve = final_images[i]
         length = curve.shape[1]
@@ -201,13 +206,23 @@ def main():
                 else:
                     continue
         fig.add_subplot(rows, columns, i + 1)
+        coords.append(ys)
         plt.plot(xs, ys)
     plt.show()
 
-    base_grayscale = 127
-    grayscale_values = []
-    axis = baselines[0]
-    print(curve_widths)
+    bigger_pic = []
+    for i in range(len(baselines)):
+        axis = baselines[i]
+        gs_img = []
+        for j in range(len(coords[0])):
+            actual_coord = curve_upper_bound[i] + coords[i][j]
+            g = 127 + actual_coord - axis
+            gs_img.append(g)
+        bigger_pic.append(gs_img)
+    gs = np.asarray(bigger_pic)
+    im = Image.new('L', (1454, 5))
+    im.putdata(gs)
+    im.show()
 
 
 
