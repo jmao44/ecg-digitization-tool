@@ -219,10 +219,10 @@ def main():
             g = 127 + actual_coord - axis
             gs_img.append(g)
         bigger_pic.append(gs_img)
-    gs = np.asarray(bigger_pic)
-    im = Image.new('L', (1454, 5))
-    im.putdata(gs)
-    im.show()
+    array = np.array(bigger_pic, dtype=np.uint8)
+    newimg = Image.fromarray(array)
+    newimg.show()
+    newimg.save('result_image.png')
 
 
 
