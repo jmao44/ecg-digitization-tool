@@ -86,7 +86,8 @@ def ocr(image):
 
 
 def main():
-    image_name = 'images/test4.jpeg'  # select image
+    # image_name = 'images/test4.jpeg'  # select image
+    image_name = 'new/6/22 陆金明 ？/IMAGE_000018.jpg'
     image = cv.imread(image_name, flags=cv.IMREAD_GRAYSCALE)  # read the image as GS
 
     # sanity check
@@ -94,6 +95,7 @@ def main():
         print('Cannot open image: ' + image_name)
         sys.exit(0)
     display_image(image, 'Original Image')
+    print(image.shape)
 
     # crop out upper region
     cropped_image = crop_image(image, 200, -20, 0, 0)
@@ -102,6 +104,7 @@ def main():
     # use thresholding to transform the image into a binary one
     ret, binary_image = cv.threshold(cropped_image, 127, 255, cv.THRESH_BINARY)
     display_image(binary_image, 'Binary Image')
+    print(binary_image.shape)
 
     structure = np.array([[1, 1, 1],
                           [1, 1, 1],
@@ -154,6 +157,8 @@ def main():
         sl = ndimage.find_objects(labeled_image == i)
         img = binary_image[sl[0]]
         if 10 < img.shape[0] < 12 and 6 < img.shape[1] < 8:
+            if (len(baselines) == 5):
+                break
             baselines.append(sl[0][0].stop)
             print("'S' {} line range = [{}, {}].".format(len(baselines), sl[0][0].start, sl[0][0].stop))
 
