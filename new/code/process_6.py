@@ -11,6 +11,7 @@ STRUCTURE = np.array([[1, 1, 1],
                       [1, 1, 1],
                       [1, 1, 1]], np.uint8)
 
+invalid_pics = []
 root_directory = '../6'
 for person_name in listdir(root_directory):
     if person_name == '.DS_Store':
@@ -126,16 +127,22 @@ for person_name in listdir(root_directory):
         # plt.show()
 
         bigger_pic = []
-        for i in range(len(baselines)):
-            axis = baselines[i]
-            gs_img = []
-            for j in range(len(coords[0])):
-                actual_coord = curve_upper_bounds[i] + coords[i][j]
-                g = 127 + actual_coord - axis
-                gs_img.append(g)
-            bigger_pic.append(gs_img)
-        array = np.array(bigger_pic, dtype=np.uint8)
-        new_img = Image.fromarray(array)
-        # new_img.show()
-        new_img.save('../6_results/' + person_name + '/' + image_name, 'JPEG')
+        try:
+            for i in range(len(baselines)):
+                axis = baselines[i]
+                gs_img = []
+                for j in range(len(coords[0])):
+                    actual_coord = curve_upper_bounds[i] + coords[i][j]
+                    g = 127 + actual_coord - axis
+                    gs_img.append(g)
+                bigger_pic.append(gs_img)
+            array = np.array(bigger_pic, dtype=np.uint8)
+            new_img = Image.fromarray(array)
+            # new_img.show()
+            new_img.save('../6_results/' + person_name + '/' + image_name, 'JPEG')
+        except IndexError as e:
+            invalid_pics.append(image_path)
+            continue
 
+print()
+print('Invalid pictures: {}'.format(invalid_pics))

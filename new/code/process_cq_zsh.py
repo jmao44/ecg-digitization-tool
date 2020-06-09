@@ -1,5 +1,6 @@
 import numpy as np
 import cv2 as cv
+import os
 from os import listdir
 from PIL import Image
 from matplotlib import pyplot as plt
@@ -11,7 +12,8 @@ STRUCTURE = np.array([[1, 1, 1],
                       [1, 1, 1],
                       [1, 1, 1]], np.uint8)
 
-root_directory = '../chongqing'
+invalid_pics = []
+root_directory = '../ZSH Carto'
 for person_name in listdir(root_directory):
     if person_name == '.DS_Store':
         continue
@@ -107,22 +109,33 @@ for person_name in listdir(root_directory):
             # plt.plot(xs, ys)
         # plt.show()
         bigger_pic = []
-        for i in range(len(baselines)):
-            axis = baselines[i]
-            gs_img = []
-            for j in range(len(coords[0])):
-                actual_coord = curve_upper_bounds[i] + coords[i][j]
-                g = 127 + actual_coord - axis
-                gs_img.append(g)
-            bigger_pic.append(gs_img)
-        array = np.array(bigger_pic, dtype=np.uint8)
-        new_img = Image.fromarray(array)
-        # new_img.show()
-        new_img.save('../chongqing_results/' + person_name + '/' + image_name, 'JPEG')
+        try:
+            for i in range(len(baselines)):
+                axis = baselines[i]
+                gs_img = []
+                for j in range(len(coords[0])):
+                    actual_coord = curve_upper_bounds[i] + coords[i][j]
+                    g = 127 + actual_coord - axis
+                    gs_img.append(g)
+                bigger_pic.append(gs_img)
+            array = np.array(bigger_pic, dtype=np.uint8)
+            new_img = Image.fromarray(array)
+            # new_img.show()
+            result_directory = ''
+            if root_directory == '../chongqing':
+                result_directory = '../chongqing_results/'
+            else:
+                result_directory = '../zsh_results/'
+            new_img.save(result_directory + person_name + '/' + image_name, 'JPEG')
+        except IndexError as e:
+            invalid_pics.append(image_path)
+            continue
 
+print()
+print('Invalid pictures: {}'.format(invalid_pics))
 
-
-
+for pic in invalid_pics:
+    os.remove(pic)
 
 
 
