@@ -7,7 +7,6 @@ from matplotlib import pyplot as plt
 from PIL import Image
 import pytesseract
 
-
 # Helper function to help display an oversized image
 def display_image(image, name):
     if image.shape[0] > 1000:
@@ -88,12 +87,14 @@ def ocr(image):
 def main():
     # image_name = 'images/test4.jpeg'  # select image
     image_name = 'new/6/22 陆金明 ？/IMAGE_000018.jpg'
+
     image = cv.imread(image_name, flags=cv.IMREAD_GRAYSCALE)  # read the image as GS
 
     # sanity check
     if image is None:
         print('Cannot open image: ' + image_name)
         sys.exit(0)
+
     display_image(image, 'Original Image')
     print(image.shape)
 
@@ -228,8 +229,6 @@ def main():
     newimg = Image.fromarray(array)
     newimg.show()
     newimg.save('result_image.png')
-
-
 
 if __name__ == '__main__':
     main()
